@@ -12,7 +12,7 @@
     <header>
         <nav class="navbar navbar-dark bg-dark">
             <div class="container-fluid">
-              <a class="navbar-brand" href="#">Navbar</a>
+              <a class="navbar-brand" href="#">Breaking Bad</a>
             </div>
       </nav>
     </header>
@@ -60,8 +60,9 @@
             <div class="py-5">
                 <div class="container">
                     <div class="col-lg-6 col-md-8 mx-auto">
-                        <h1>Result:</h1>
-                        <p id="result"></p>
+                        <h2>Result:</h2>
+                        <div id="result">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -75,8 +76,9 @@
     document.getElementById("btnSend").addEventListener("click", function() {
         var endPoint = document.getElementById("endPoint");
         var query = document.getElementById("query");
-        var result = getFromUrl(endPoint.value, query.value);
+        getFromUrl(endPoint.value, query.value);
     });
+
 
     function getFromUrl(endPoint = '', attributes = '') {
         const ajax = new XMLHttpRequest();
@@ -89,8 +91,59 @@
 
         ajax.onreadystatechange = () => {
             if (ajax.readyState === 4 && ajax.status === 200) {
-                const data = ajax.responseText
-                document.getElementById("result").innerHTML = data;
+                document.getElementById('result').innerHTML = '';
+                const data = JSON.parse(ajax.responseText);
+
+                if (endPoint === 'characters') {
+                    for (let i = 0; i < data.length; i++) {
+                        var html = `
+                            <p><b>Character ID: </b>`+ data[i].char_id +`</p>
+                            <p><b>Name: </b>`+ data[i].name +`</p>
+                            <p><b>Image: </b>`+ data[i].img +`</p><br>
+                            <img class="img-thumbnail" src="`+data[i].img+`">
+                            <hr>`;
+                        var newDiv = document.createElement('div');
+                        newDiv.innerHTML = html;
+                        document.getElementById('result').append(newDiv);
+                    }
+
+                }
+
+                if (endPoint === 'episodes') {
+                    for (let i = 0; i < data.length; i++) {
+                        var html = `
+                        <p><b>Episode ID: </b>`+ data[i].episode_id +`</p>
+                        <p><b>Title: </b>`+ data[i].title +`</p>
+                        <p><b>Season: </b>`+ data[i].season +`</p><br><hr>`;
+                        var newDiv = document.createElement('div');
+                        newDiv.innerHTML = html;
+                        document.getElementById('result').append(newDiv);
+                    }
+                }
+
+                if (endPoint === 'quotes') {
+                    for (let i = 0; i < data.length; i++) {
+                        var html = `
+                        <p><b>Quote ID:</b>`+ data[i].quote_id +`</p>
+                        <p><b>Quote: </b>`+ data[i].quote +`</p>
+                        <p><b>Author: </b>`+ data[i].author +`</p><br><hr>`;
+                        var newDiv = document.createElement('div');
+                        newDiv.innerHTML = html;
+                        document.getElementById('result').append(newDiv);
+                    }
+                }
+
+                if (endPoint === 'deaths') {
+                    for (let i = 0; i < data.length; i++) {
+                        var html = `
+                        <p><b>Death ID: </b>`+ data[i].death_id +`</p>
+                        <p><b>Death: </b>`+ data[i].death +`</p>
+                        <p><b>Responsible: </b>`+ data[i].responsible +`</p><br><hr>`;
+                        var newDiv = document.createElement('div');
+                        newDiv.innerHTML = html;
+                        document.getElementById('result').append(newDiv);
+                    }
+                }
             }   
         }
     }
